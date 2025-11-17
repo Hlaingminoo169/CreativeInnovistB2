@@ -1,0 +1,32 @@
+{
+  "name": "nodejs-framework-thinking",
+  "version": "1.0.0",
+  "description": "\"Framework Thinking\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exi`t 1",
+    "start:dev": "nodemon"
+  },
+  "author": "Hmo",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hlaingminoo169/week2assignment.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Hlaingminoo169/week2assignment/issues"
+  },
+  "homepage": "https://github.com/Hlaingminoo169/week2assignment#readme"
+}
