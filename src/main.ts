@@ -1,12 +1,13 @@
-import Express = require("express");
+import "dotenv/config";
+import App from "./app";
 
-const app = Express();
-const port = 8081;
+async function bootstrap() {
+  const port = process.env.APPLICATION_PORT
+    ? Number(process.env.APPLICATION_PORT)
+    : 3000;
+  const app = new App(port);
 
-app.get("/", (req, res) => {
-  res.send("Hello, This is Hmo!");
-});
+  app.listen();
+}
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+bootstrap();
