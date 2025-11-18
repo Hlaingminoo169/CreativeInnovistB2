@@ -9,12 +9,12 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} ${label} [${level}]: ${appName} application is started : ${hostName} - ${ipAddress} => ${message}`;
 });
 
-const devLogger = () => {
+const uatLogger = () => {
   return createLogger({
     level: "debug",
     format: combine(
       format.colorize(),
-      label({ label: "devLogger" }),
+      label({ label: "uatlogger" }),
       timestamp({ format: "DD-MM-YYYY HH:mm:ss" }),
       myFormat
     ),
@@ -36,4 +36,4 @@ function getIPAddress() {
   return ipAddress;
 }
 
-export default devLogger;
+export default uatLogger;
