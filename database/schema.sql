@@ -15,10 +15,3 @@ CREATE TABLE IF NOT EXISTS articles (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-INSERT INTO articles (post_name, post_title, post_description)
-VALUES (
-  'first-post',
-  'My First Post',
-  'This is my first article description'
-);
