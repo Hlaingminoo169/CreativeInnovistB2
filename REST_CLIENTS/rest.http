@@ -1,0 +1,6 @@
+### Get All Users
+@HOST = http://localhost:8081
+Get {{HOST}}/api/v1/users
+
+### Get All Articles
+Get {{HOST}}/api/v1/articles

@@ -1,49 +1,59 @@
 import express, { Application } from "express";
 import logger from "./config/logger";
 import environment from "./config/env";
-import dotenv from "dotenv";
-import pkg from "pg";
-
-const { Client } = pkg;
-dotenv.config();
+import "reflect-metadata";
+import { useExpressServer } from "routing-controllers";
+import { ResponseInterceptor } from "core/interceptors/response.interceptor";
+import { ErrorMiddleware } from "core/middlewares/error.middleware";
+import { pool } from "./config/database";
+import { Pool } from "pg";
 
 class App {
   public express: Application;
   public port: number;
+  private dbPool: Pool;
 
-  constructor(port: number) {
+  constructor(port: number, controllers: any[], routePrefix: string) {
     this.express = express();
     this.port = port;
-
-    this.initiateDatabaseConnection();
-  }
-
-  // DB Connection (PostgreSQL - Same structure as Mongo version)
-  private initiateDatabaseConnection(): void {
-    const { name, dataStore } = environment;
-    const { host, port, database, username, password } = dataStore;
-
-    const client = new Client({
-      host,
-      port,
-      database,
-      user: username,
-      password,
+    this.dbPool = new Pool({
+      connectionString: environment.dataStore.path,
     });
 
-    client
-      .connect()
-      .then(() => {
-        logger.info(`Connected to PostgreSQL for ${name}`);
-        return client.query("SELECT NOW() AS now");
-      })
-      .then((result) => {
-        logger.info(`PostgreSQL Time: ${result.rows[0].now}`);
-      })
-      .catch((error) => {
-        logger.error("Error connecting to PostgreSQL:", error);
-        process.exit(1);
-      });
+    this.initiateDatabaseConnection();
+    this.initializeControllers(controllers, routePrefix);
+  }
+
+  // DB Connection
+  private async initiateDatabaseConnection(): Promise<void> {
+    const { name } = environment;
+    const { path } = environment.dataStore;
+
+    try {
+      const client = await this.dbPool.connect();
+      const result = await client.query("SELECT NOW()");
+      logger.info(
+        `${name} connected to database at ${path} - Time: ${result.rows[0].now}`
+      );
+      client.release();
+    } catch (error) {
+      logger.error(`Failed to connect to database at ${path}: ${error}`);
+      process.exit(1);
+    }
+  }
+
+  // Controller
+  private initializeControllers(
+    controllerList: any[],
+    routePrefix: string
+  ): void {
+    useExpressServer(this.express, {
+      controllers: controllerList,
+      routePrefix: routePrefix ? `/api${routePrefix}` : "/api",
+      defaultErrorHandler: false,
+      middlewares: [ErrorMiddleware],
+      interceptors: [ResponseInterceptor],
+    });
   }
 
   public listen(): void {
